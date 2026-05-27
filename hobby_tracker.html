@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>취미 트래커</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root {
+  --bg: #faf8f5;
+  --bg2: #f2efe9;
+  --bg3: #e8e3da;
+  --border: #d8d2c8;
+  --border2: #c4bdb2;
+  --text: #2a2520;
+  --text2: #7a7168;
+  --text3: #a89f94;
+  --accent: #7b6fa0;
+  --accent-light: #eeebf6;
+  --accent-dark: #5a5079;
+  --green: #5a8a6a;
+  --green-light: #e8f2ec;
+  --amber: #a07030;
+  --amber-light: #f5ecd8;
+  --red: #a04040;
+  --red-light: #f5e8e8;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --shadow: 0 1px 4px rgba(42,37,32,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Gowun Dodum', serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+/* Layout */
+.app { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 2rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.sidebar-logo {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+.sidebar-logo span { color: var(--accent); }
+.nav-group { display: flex; flex-direction: column; gap: 2px; }
+.nav-label { font-size: 10px; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; padding-left: 10px; }
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text2);
+  border: none; background: none; width: 100%; text-align: left;
+  transition: all .15s;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active { background: var(--accent-light); color: var(--accent-dark); font-weight: 500; }
+.nav-item i { font-size: 16px; }
+.main { flex: 1; padding: 2rem 2.5rem; max-width: 900px; overflow-x: hidden; }
+/* Sections */
+.section { display: none; }
+.section.active { display: block; }
+/* Page header */
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; }
+.page-title { font-family: 'Nanum Myeongjo', serif; font-size: 24px; font-weight: 700; }
+.page-title span { font-size: 13px; font-family: 'Gowun Dodum', serif; font-weight: 400; color: var(--text3); margin-left: 10px; }
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px; border-radius: var(--radius);
+  border: 1px solid var(--border); cursor: pointer;
+  font-size: 13px; font-family: 'Gowun Dodum', serif;
+  background: var(--bg); color: var(--text2);
+  transition: all .15s;
+}
+.btn:hover { background: var(--bg3); color: var(--text); border-color: var(--border2); }
+.btn-accent { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-accent:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: #fff; }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-danger { color: var(--red); }
+.btn-danger:hover { background: var(--red-light); border-color: var(--red); }
+/* Stats */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 1.75rem; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: .9rem 1rem; }
+.stat-n { font-size: 26px; font-weight: 700; font-family: 'Nanum Myeongjo', serif; }
+.stat-l { font-size: 11px; color: var(--text3); margin-top: 2px; }
+/* Cards grid */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.2rem;
+  position: relative;
+  transition: border-color .15s, box-shadow .15s;
+}
+.card:hover { border-color: var(--border2); box-shadow: var(--shadow); }
+.card-icon {
+  width: 38px; height: 38px; border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; margin-bottom: 10px;
+}
+.icon-knit { background: var(--accent-light); color: var(--accent-dark); }
+.icon-done { background: var(--green-light); color: var(--green); }
+.icon-plant { background: var(--green-light); color: var(--green); }
+.card-name { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+.card-sub { font-size: 12px; color: var(--text3); margin-bottom: 8px; }
+.pills { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.pill {
+  font-size: 11px; padding: 3px 9px; border-radius: 999px;
+  font-weight: 500; white-space: nowrap;
+}
+.pill-purple { background: var(--accent-light); color: var(--accent-dark); }
+.pill-green { background: var(--green-light); color: var(--green); }
+.pill-amber { background: var(--amber-light); color: var(--amber); }
+.pill-gray { background: var(--bg3); color: var(--text2); }
+.pill-blue { background: #e4eef8; color: #2a5a8a; }
+.pill-pink { background: #f5e8ee; color: #7a3055; }
+.pill-red { background: var(--red-light); color: var(--red); }
+.card-row { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); margin-top: 5px; }
+.card-row i { font-size: 14px; }
+.alert-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--amber-light); color: var(--amber); border-radius: var(--radius); font-size: 11px; padding: 3px 8px; }
+.progress-wrap { margin-top: 10px; }
+.progress-bar-bg { height: 4px; background: var(--bg3); border-radius: 999px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: var(--accent); border-radius: 999px; }
+.progress-lbl { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); margin-top: 3px; }
+.del-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; cursor: pointer; color: var(--text3); font-size: 14px; opacity: 0; transition: opacity .15s; }
+.card:hover .del-btn { opacity: 1; }
+.del-btn:hover { color: var(--red); }
+/* Empty */
+.empty { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 13px; }
+.empty i { font-size: 28px; display: block; margin-bottom: 8px; }
+/* Sub tabs */
+.sub-tabs { display: flex; gap: 8px; margin-bottom: 1.25rem; }
+.sub-tab {
+  padding: 6px 18px; border-radius: 999px;
+  border: 1px solid var(--border); background: none;
+  cursor: pointer; font-size: 13px; color: var(--text2);
+  font-family: 'Gowun Dodum', serif;
+  transition: all .15s;
+}
+.sub-tab.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+.sub-section { display: none; }
+.sub-section.active { display: block; }
+/* Detail panel */
+.detail-panel {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+.panel-tabs { display: flex; gap: 8px; margin-bottom: 1.25rem; }
+.ptab {
+  padding: 5px 16px; border-radius: 999px;
+  border: 1px solid var(--border); background: none;
+  cursor: pointer; font-size: 13px; color: var(--text2);
+  font-family: 'Gowun Dodum', serif; transition: all .15s;
+}
+.ptab.active { background: var(--bg2); color: var(--text); border-color: var(--border2); }
+.psec { display: none; }
+.psec.active { display: block; }
+/* Parts */
+.parts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 14px; }
+.part-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: .75rem 1rem; position: relative; }
+.part-name { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+.part-sts { font-size: 26px; font-weight: 700; font-family: 'Nanum Myeongjo', serif; color: var(--accent); }
+.part-unit { font-size: 12px; color: var(--text3); }
+.part-note { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.part-del { position: absolute; top: 6px; right: 6px; background: none; border: none; cursor: pointer; color: var(--text3); font-size: 12px; opacity: 0; }
+.part-card:hover .part-del { opacity: 1; }
+/* Add inline */
+.add-inline { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+.add-inline input, .field input, .field select, .field textarea {
+  padding: 7px 12px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--bg2);
+  color: var(--text); font-size: 13px; font-family: 'Gowun Dodum', serif;
+  transition: border-color .15s;
+}
+.add-inline input:focus, .field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--accent);
+}
+.add-inline input.w-lg { width: 150px; }
+.add-inline input.w-sm { width: 74px; }
+/* Row table */
+.row-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.row-table th { text-align: left; padding: 6px 10px; font-size: 11px; color: var(--text3); border-bottom: 1px solid var(--border); font-weight: 500; }
+.row-table td { padding: 9px 10px; border-bottom: 1px solid var(--bg3); vertical-align: middle; }
+.row-table tr:last-child td { border-bottom: none; }
+.row-table tr:hover td { background: var(--bg); }
+.stitch-tag { display: inline-flex; align-items: center; gap: 3px; background: var(--accent-light); color: var(--accent-dark); border-radius: 999px; font-size: 12px; padding: 3px 9px; margin: 2px; }
+.stitch-rep { color: var(--accent); font-weight: 600; }
+.row-num { width: 28px; height: 28px; border-radius: 50%; background: var(--bg2); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: var(--text2); }
+.pending-area { display: flex; flex-wrap: wrap; gap: 5px; min-height: 32px; align-items: center; margin: 8px 0; padding: 8px; background: var(--bg2); border-radius: var(--radius); border: 1px solid var(--border); }
+.pending-tag { display: inline-flex; align-items: center; gap: 4px; background: var(--accent); color: #fff; border-radius: 999px; font-size: 12px; padding: 3px 9px; cursor: pointer; }
+.pending-tag:hover { background: var(--accent-dark); }
+.hint { font-size: 11px; color: var(--text3); margin-top: 6px; line-height: 1.6; }
+.section-lbl { font-size: 11px; color: var(--text3); letter-spacing: .5px; margin-bottom: 8px; margin-top: 14px; display: flex; align-items: center; justify-content: space-between; }
+.total-badge { font-size: 13px; font-weight: 600; color: var(--accent); font-family: 'Nanum Myeongjo', serif; }
+/* Log list */
+.log-list { display: flex; flex-direction: column; gap: 8px; }
+.log-item { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: .85rem 1rem; display: flex; gap: 12px; align-items: flex-start; }
+.log-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.log-dot-water { background: #4a90d9; }
+.log-dot-repot { background: var(--green); }
+.log-dot-fert { background: var(--amber); }
+.log-dot-note { background: var(--text3); }
+.log-date { font-size: 11px; color: var(--text3); margin-bottom: 2px; }
+.log-text { font-size: 13px; }
+/* Modal */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(42,37,32,0.45); z-index: 100;
+  align-items: center; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: #fff; border-radius: var(--radius-lg);
+  border: 1px solid var(--border); padding: 1.75rem;
+  width: 100%; max-width: 440px; margin: 1rem;
+  box-shadow: 0 8px 32px rgba(42,37,32,0.14);
+}
+.modal h3 { font-family: 'Nanum Myeongjo', serif; font-size: 18px; margin-bottom: 1.25rem; }
+.field { margin-bottom: 12px; }
+.field label { display: block; font-size: 11px; color: var(--text3); margin-bottom: 4px; letter-spacing: .3px; }
+.field input, .field select { width: 100%; }
+.field textarea { width: 100%; resize: vertical; min-height: 60px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.25rem; }
+/* Proj list */
+.proj-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.75rem; }
+.proj-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.2rem; cursor: pointer; transition: all .15s; }
+.proj-card:hover { border-color: var(--border2); box-shadow: var(--shadow); }
+.proj-card.selected { border: 1.5px solid var(--accent); background: #fff; }
+.proj-header { display: flex; align-items: center; gap: 10px; }
+.proj-icon { width: 38px; height: 38px; border-radius: var(--radius); background: var(--accent-light); color: var(--accent-dark); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.proj-info { flex: 1; min-width: 0; }
+.proj-name { font-size: 15px; font-weight: 500; }
+.proj-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.proj-actions { display: flex; gap: 6px; flex-shrink: 0; }
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 9px; }
+/* Storage indicator */
+.save-indicator { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 4px; }
+.save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">취미<span>.</span>기록</div>
+  <nav class="nav-group">
+    <div class="nav-label">메뉴</div>
+    <button class="nav-item active" onclick="showSection('knit-wip')" id="nav-knit-wip">
+      <i class="ti ti-needle-thread"></i> 뜨개 · 작업 중
+    </button>
+    <button class="nav-item" onclick="showSection('knit-done')" id="nav-knit-done">
+      <i class="ti ti-check"></i> 뜨개 · 완성작
+    </button>
+    <button class="nav-item" onclick="showSection('plant-list')" id="nav-plant-list">
+      <i class="ti ti-plant"></i> 식물 목록
+    </button>
+    <button class="nav-item" onclick="showSection('plant-log')" id="nav-plant-log">
+      <i class="ti ti-droplet"></i> 관리 일지
+    </button>
+  </nav>
+  <div style="margin-top:auto">
+    <div class="save-indicator"><div class="save-dot"></div> 자동 저장 중</div>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main">
+
+<!-- ===== 뜨개 · 작업 중 ===== -->
+<div id="sec-knit-wip" class="section active">
+  <div class="page-header">
+    <div class="page-title">작업 중인 프로젝트</div>
+    <button class="btn btn-accent" onclick="openModal('modal-proj')"><i class="ti ti-plus"></i> 새 프로젝트</button>
+  </div>
+  <div class="proj-list" id="proj-list"></div>
+  <div id="proj-detail"></div>
+</div>
+
+<!-- ===== 뜨개 · 완성작 ===== -->
+<div id="sec-knit-done" class="section">
+  <div class="page-header">
+    <div class="page-title">완성작 갤러리</div>
+    <button class="btn btn-accent" onclick="openModal('modal-done')"><i class="ti ti-plus"></i> 완성작 추가</button>
+  </div>
+  <div class="stats-row" id="stats-done"></div>
+  <div class="cards-grid" id="grid-done"></div>
+</div>
+
+<!-- ===== 식물 목록 ===== -->
+<div id="sec-plant-list" class="section">
+  <div class="page-header">
+    <div class="page-title">우리 집 식물들</div>
+    <button class="btn btn-accent" onclick="openModal('modal-plant')"><i class="ti ti-plus"></i> 식물 추가</button>
+  </div>
+  <div class="stats-row" id="stats-plant"></div>
+  <div class="cards-grid" id="grid-plant"></div>
+</div>
+
+<!-- ===== 관리 일지 ===== -->
+<div id="sec-plant-log" class="section">
+  <div class="page-header">
+    <div class="page-title">관리 일지</div>
+    <button class="btn btn-accent" onclick="openModal('modal-log'); fillLogPlants()"><i class="ti ti-plus"></i> 기록 추가</button>
+  </div>
+  <div class="log-list" id="log-list"></div>
+</div>
+
+</main>
+</div>
+
+<!-- ===== Modals ===== -->
+
+<!-- 새 프로젝트 -->
+<div class="modal-overlay" id="modal-proj">
+  <div class="modal">
+    <h3>새 프로젝트</h3>
+    <div class="field"><label>프로젝트 이름</label><input id="pj-name" placeholder="예: 베이지 가디건"></div>
+    <div class="field-row">
+      <div class="field"><label>실 색상</label><input id="pj-color" placeholder="베이지"></div>
+      <div class="field"><label>바늘 사이즈</label><input id="pj-needle" placeholder="5mm"></div>
+    </div>
+    <div class="field"><label>실 종류</label><input id="pj-yarn" placeholder="메리노울 200g"></div>
+    <div class="field"><label>총 단 수 (완성 기준)</label><input id="pj-total" type="number" min="1" placeholder="예: 120"></div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal('modal-proj')">취소</button>
+      <button class="btn btn-accent" onclick="saveProj()">만들기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 완성작 -->
+<div class="modal-overlay" id="modal-done">
+  <div class="modal">
+    <h3>완성작 기록</h3>
+    <div class="field"><label>작품 이름</label><input id="d-name" placeholder="예: 초록 비니"></div>
+    <div class="field-row">
+      <div class="field"><label>완성 날짜</label><input id="d-date" type="date"></div>
+      <div class="field"><label>난이도</label>
+        <select id="d-diff"><option value="입문">입문</option><option value="초급">초급</option><option value="중급">중급</option><option value="고급">고급</option></select>
+      </div>
+    </div>
+    <div class="field"><label>사용 실</label><input id="d-yarn" placeholder="실 색상, 종류"></div>
+    <div class="field"><label>한 줄 소감</label><input id="d-memo" placeholder="이번 작품에서 배운 점, 느낀 점"></div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal('modal-done')">취소</button>
+      <button class="btn btn-accent" onclick="saveDone()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 식물 추가 -->
+<div class="modal-overlay" id="modal-plant">
+  <div class="modal">
+    <h3>식물 추가</h3>
+    <div class="field-row">
+      <div class="field"><label>이름 (별명)</label><input id="p-name" placeholder="예: 몬순이"></div>
+      <div class="field"><label>종류</label><input id="p-type" placeholder="예: 몬스테라"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>입양일</label><input id="p-date" type="date"></div>
+      <div class="field"><label>물 주기 (일)</label><input id="p-water" type="number" min="1" value="7"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>햇빛</label>
+        <select id="p-sun">
+          <option value="직사광선">직사광선</option>
+          <option value="밝은 간접광">밝은 간접광</option>
+          <option value="간접광">간접광</option>
+          <option value="반음지">반음지</option>
+        </select>
+      </div>
+      <div class="field"><label>흙 종류</label><input id="p-soil" placeholder="예: 배수 잘 되는 흙"></div>
+    </div>
+    <div class="field"><label>비료 주기</label><input id="p-fert" placeholder="예: 봄/여름 2주에 한 번"></div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal('modal-plant')">취소</button>
+      <button class="btn btn-accent" onclick="savePlant()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 관리 기록 -->
+<div class="modal-overlay" id="modal-log">
+  <div class="modal">
+    <h3>관리 기록 추가</h3>
+    <div class="field"><label>식물 선택</label><select id="l-plant"></select></div>
+    <div class="field-row">
+      <div class="field"><label>날짜</label><input id="l-date" type="date"></div>
+      <div class="field"><label>종류</label>
+        <select id="l-type">
+          <option value="water">물주기</option>
+          <option value="repot">분갈이</option>
+          <option value="fert">비료</option>
+          <option value="note">메모</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>내용</label><input id="l-note" placeholder="상태, 특이사항 등"></div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal('modal-log')">취소</button>
+      <button class="btn btn-accent" onclick="saveLog()">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TODAY = new Date().toISOString().split('T')[0];
+
+// ── Data (localStorage 자동 저장) ──
+function load(key, def) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch { return def; }
+}
+function save(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+}
+
+let projects = load('hb_projects', [
+  {id:1,name:'베이지 롱 가디건',color:'베이지',needle:'5mm',yarn:'울 혼방 200g',totalRows:120,
+   parts:[
+     {id:11,name:'앞판',stitches:80,note:'2코 고무단 시작'},
+     {id:12,name:'뒤판',stitches:80,note:''},
+     {id:13,name:'소매 (×2)',stitches:40,note:'소맷부리에서 늘림코'},
+     {id:14,name:'네크라인',stitches:24,note:''}
+   ],
+   rows:[
+     {id:21,num:'1',stitches:[{abbr:'k2',rep:40},{abbr:'p2',rep:40}],note:'고무단 시작'},
+     {id:22,num:'2',stitches:[{abbr:'p2',rep:40},{abbr:'k2',rep:40}],note:''},
+     {id:23,num:'3–10',stitches:[{abbr:'k2',rep:40},{abbr:'p2',rep:40}],note:'1,2단 반복 × 4'},
+     {id:24,num:'11',stitches:[{abbr:'k',rep:80}],note:'메리야스 시작'},
+   ]}
+]);
+let doneData = load('hb_done', [
+  {id:101,name:'회색 비니',date:'2025-01-15',diff:'초급',yarn:'아크릴 회색',memo:'게이지 맞추는 게 생각보다 중요했음'},
+  {id:102,name:'흰 목도리',date:'2024-11-20',diff:'입문',yarn:'혼방 화이트',memo:'첫 완성작! 가터스티치만으로도 충분히 예뻐'}
+]);
+let plantData = load('hb_plants', [
+  {id:201,name:'몬순이',type:'몬스테라',date:'2024-03-10',water:7,sun:'간접광',soil:'배수 잘 되는 흙',fert:'봄여름 2주 1회',lastWater:'2025-05-20'},
+  {id:202,name:'뚱선인장',type:'기둥선인장',date:'2023-08-05',water:21,sun:'직사광선',soil:'다육 전용토',fert:'봄 1회',lastWater:'2025-05-10'},
+  {id:203,name:'페페',type:'페페로미아',date:'2024-06-01',water:10,sun:'밝은 간접광',soil:'일반 배양토',fert:'여름 월 1회',lastWater:'2025-05-18'}
+]);
+let logData = load('hb_logs', [
+  {id:301,plantId:201,plantName:'몬순이',date:'2025-05-20',type:'water',note:'잎 닦아줌, 새 잎 나오는 중'},
+  {id:302,plantId:202,plantName:'뚱선인장',date:'2025-05-10',type:'water',note:''},
+  {id:303,plantId:201,plantName:'몬순이',date:'2025-04-15',type:'repot',note:'한 치수 큰 화분으로 분갈이 완료'},
+  {id:304,plantId:203,plantName:'페페',date:'2025-05-18',type:'fert',note:'액체 비료 1/2 희석'}
+]);
+
+let nid = load('hb_nid', 500);
+let selectedProj = null;
+let activeTab = 'parts';
+let pendingStitches = [];
+
+function persist() {
+  save('hb_projects', projects);
+  save('hb_done', doneData);
+  save('hb_plants', plantData);
+  save('hb_logs', logData);
+  nid++;
+  save('hb_nid', nid);
+}
+
+// ── Navigation ──
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'knit-wip') renderProjList();
+  if (name === 'knit-done') renderDone();
+  if (name === 'plant-list') renderPlants();
+  if (name === 'plant-log') renderLog();
+}
+
+// ── Modals ──
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// ── 프로젝트 목록 ──
+function renderProjList() {
+  const el = document.getElementById('proj-list');
+  if (!projects.length) {
+    el.innerHTML = '<div class="empty"><i class="ti ti-needle-thread"></i>프로젝트가 없어요. 새 프로젝트를 만들어 보세요!</div>';
+    document.getElementById('proj-detail').innerHTML = '';
+    return;
+  }
+  el.innerHTML = projects.map(p => {
+    const prog = p.totalRows ? Math.round(Math.min(p.rows.length / p.totalRows * 100, 100)) : 0;
+    const totalSts = p.parts.reduce((a, pt) => a + pt.stitches, 0);
+    return `<div class="proj-card${selectedProj === p.id ? ' selected' : ''}" onclick="selectProj(${p.id})">
+      <div class="proj-header">
+        <div class="proj-icon"><i class="ti ti-needle-thread"></i></div>
+        <div class="proj-info">
+          <div class="proj-name">${p.name}</div>
+          <div class="proj-meta">${[p.needle, p.color, p.yarn].filter(Boolean).join(' · ')}${totalSts ? ` · 총 ${totalSts}코` : ''}</div>
+        </div>
+        <div class="proj-actions">
+          <button class="btn btn-sm btn-danger" onclick="delProj(${p.id},event)"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>
+      ${p.totalRows ? `<div class="progress-bar-bg" style="margin-top:10px"><div class="progress-bar-fill" style="width:${prog}%"></div></div><div class="progress-lbl"><span>${p.rows.length} / ${p.totalRows}단 기록</span><span>${prog}%</span></div>` : ''}
+    </div>`;
+  }).join('');
+  if (selectedProj) renderDetail();
+}
+
+function selectProj(id) {
+  selectedProj = id;
+  renderProjList();
+}
+
+function delProj(id, e) {
+  e.stopPropagation();
+  if (!confirm('프로젝트를 삭제할까요?')) return;
+  projects = projects.filter(p => p.id !== id);
+  if (selectedProj === id) { selectedProj = null; document.getElementById('proj-detail').innerHTML = ''; }
+  persist(); renderProjList();
+}
+
+function saveProj() {
+  const n = document.getElementById('pj-name').value.trim();
+  if (!n) return;
+  const p = { id: nid, name: n, color: document.getElementById('pj-color').value.trim(), needle: document.getElementById('pj-needle').value.trim(), yarn: document.getElementById('pj-yarn').value.trim(), totalRows: +document.getElementById('pj-total').value || 0, parts: [], rows: [] };
+  projects.unshift(p);
+  ['pj-name','pj-color','pj-needle','pj-yarn','pj-total'].forEach(id => document.getElementById(id).value = '');
+  persist(); closeModal('modal-proj');
+  selectedProj = p.id;
+  renderProjList();
+}
+
+// ── Detail Panel ──
+function renderDetail() {
+  const p = projects.find(x => x.id === selectedProj);
+  if (!p) { document.getElementById('proj-detail').innerHTML = ''; return; }
+  document.getElementById('proj-detail').innerHTML = `
+  <div class="detail-panel">
+    <div class="panel-tabs">
+      <button class="ptab${activeTab==='parts'?' active':''}" onclick="switchTab('parts')"><i class="ti ti-layout-grid"></i> 파트별 코 수</button>
+      <button class="ptab${activeTab==='rows'?' active':''}" onclick="switchTab('rows')"><i class="ti ti-list-numbers"></i> 단별 패턴</button>
+    </div>
+    <div id="psec-parts" class="psec${activeTab==='parts'?' active':''}"></div>
+    <div id="psec-rows" class="psec${activeTab==='rows'?' active':''}"></div>
+  </div>`;
+  if (activeTab === 'parts') renderPartsSection();
+  else renderRowsSection();
+}
+
+function switchTab(t) {
+  activeTab = t;
+  renderDetail();
+}
+
+// ── Parts ──
+function renderPartsSection() {
+  const p = projects.find(x => x.id === selectedProj);
+  if (!p) return;
+  const el = document.getElementById('psec-parts');
+  if (!el) return;
+  const totalSts = p.parts.reduce((a, pt) => a + pt.stitches, 0);
+  el.innerHTML = `
+  <div class="section-lbl">파트별 코 수 <span class="total-badge">${totalSts ? '총 ' + totalSts + '코' : ''}</span></div>
+  <div class="parts-grid" id="parts-grid"></div>
+  <div class="section-lbl" style="margin-top:14px">파트 추가</div>
+  <div class="add-inline">
+    <input class="w-lg" id="pt-name" placeholder="파트 이름 (예: 앞판)">
+    <input class="w-sm" id="pt-sts" type="number" min="1" placeholder="코 수">
+    <input class="w-lg" id="pt-note" placeholder="메모 (선택)">
+    <button class="btn btn-sm" onclick="addPart()"><i class="ti ti-plus"></i> 추가</button>
+  </div>`;
+  const grid = document.getElementById('parts-grid');
+  if (!p.parts.length) { grid.innerHTML = '<div style="color:var(--text3);font-size:13px;grid-column:1/-1;padding:.5rem 0">파트를 추가해 보세요</div>'; return; }
+  grid.innerHTML = p.parts.map(pt => `<div class="part-card">
+    <button class="part-del" onclick="delPart(${pt.id})" aria-label="삭제"><i class="ti ti-x"></i></button>
+    <div class="part-name">${pt.name}</div>
+    <div><span class="part-sts">${pt.stitches}</span><span class="part-unit"> 코</span></div>
+    ${pt.note ? `<div class="part-note">${pt.note}</div>` : ''}
+  </div>`).join('');
+}
+
+function addPart() {
+  const p = projects.find(x => x.id === selectedProj); if (!p) return;
+  const n = document.getElementById('pt-name').value.trim();
+  const s = +document.getElementById('pt-sts').value;
+  if (!n || !s) return;
+  p.parts.push({ id: nid, name: n, stitches: s, note: document.getElementById('pt-note').value.trim() });
+  ['pt-name','pt-sts','pt-note'].forEach(id => document.getElementById(id).value = '');
+  persist(); renderPartsSection(); renderProjList();
+}
+
+function delPart(id) {
+  const p = projects.find(x => x.id === selectedProj); if (!p) return;
+  p.parts = p.parts.filter(pt => pt.id !== id);
+  persist(); renderPartsSection(); renderProjList();
+}
+
+// ── Rows ──
+function renderRowsSection() {
+  const p = projects.find(x => x.id === selectedProj); if (!p) return;
+  const el = document.getElementById('psec-rows'); if (!el) return;
+  el.innerHTML = `
+  <div class="section-lbl">단별 패턴</div>
+  ${p.rows.length ? `<div style="overflow-x:auto"><table class="row-table">
+    <thead><tr><th>단</th><th>스티치 구성</th><th>메모</th><th></th></tr></thead>
+    <tbody id="row-tbody"></tbody>
+  </table></div>` : '<div class="empty" style="padding:1rem 0">아직 기록된 단이 없어요</div>'}
+  <div class="section-lbl" style="margin-top:16px">단 추가</div>
+  <div class="add-inline" style="margin-bottom:8px">
+    <input class="w-sm" id="r-num" placeholder="단 번호 (예: 1 또는 3–10)">
+    <input style="width:200px" id="r-note" placeholder="메모 (선택)">
+  </div>
+  <div style="font-size:12px;color:var(--text3);margin-bottom:6px">스티치를 하나씩 추가한 뒤 단 저장</div>
+  <div class="pending-area" id="pending-tags"><span style="font-size:12px;color:var(--text3)">스티치를 추가해 보세요</span></div>
+  <div class="add-inline" style="margin-top:8px">
+    <input style="width:110px" id="s-abbr" placeholder="약어 (예: k2, p2)">
+    <input style="width:70px" id="s-rep" type="number" min="1" placeholder="× 횟수">
+    <button class="btn btn-sm" onclick="addPendingStitch()"><i class="ti ti-plus"></i> 스티치</button>
+    <button class="btn btn-sm btn-accent" onclick="addRow()"><i class="ti ti-check"></i> 단 저장</button>
+  </div>
+  <div class="hint">예: k2 × 40 → 겉뜨기 2코씩 40번 &nbsp;·&nbsp; p2 × 40 → 안뜨기 2코씩 40번 &nbsp;·&nbsp; k2tog × 20 → 2코 모아뜨기 20번 &nbsp;·&nbsp; yo × 10 → 걸기코 10번</div>`;
+  if (p.rows.length) {
+    document.getElementById('row-tbody').innerHTML = p.rows.map(r => `<tr>
+      <td><span class="row-num">${r.num}</span></td>
+      <td>${r.stitches.map(s => `<span class="stitch-tag">${s.abbr}<span class="stitch-rep"> ×${s.rep}</span></span>`).join('')}</td>
+      <td style="color:var(--text3);font-size:12px">${r.note || ''}</td>
+      <td><button class="btn btn-sm btn-danger" onclick="delRow(${r.id})"><i class="ti ti-x"></i></button></td>
+    </tr>`).join('');
+  }
+  renderPendingTags();
+}
+
+function renderPendingTags() {
+  const el = document.getElementById('pending-tags'); if (!el) return;
+  if (!pendingStitches.length) { el.innerHTML = '<span style="font-size:12px;color:var(--text3)">스티치를 추가해 보세요</span>'; return; }
+  el.innerHTML = pendingStitches.map((s, i) => `<span class="pending-tag" title="클릭해서 제거" onclick="removePending(${i})"><i class="ti ti-x" style="font-size:11px"></i> ${s.abbr} ×${s.rep}</span>`).join('');
+}
+
+function addPendingStitch() {
+  const abbr = document.getElementById('s-abbr').value.trim();
+  const rep = +document.getElementById('s-rep').value || 1;
+  if (!abbr) return;
+  pendingStitches.push({ abbr, rep });
+  document.getElementById('s-abbr').value = '';
+  document.getElementById('s-rep').value = '';
+  renderPendingTags();
+}
+
+function removePending(i) { pendingStitches.splice(i, 1); renderPendingTags(); }
+
+function addRow() {
+  const p = projects.find(x => x.id === selectedProj); if (!p) return;
+  const num = document.getElementById('r-num').value.trim();
+  if (!num || !pendingStitches.length) return;
+  p.rows.push({ id: nid, num, stitches: [...pendingStitches], note: document.getElementById('r-note').value.trim() });
+  pendingStitches = [];
+  document.getElementById('r-num').value = '';
+  document.getElementById('r-note').value = '';
+  persist(); renderRowsSection(); renderProjList();
+}
+
+function delRow(id) {
+  const p = projects.find(x => x.id === selectedProj); if (!p) return;
+  p.rows = p.rows.filter(r => r.id !== id);
+  persist(); renderRowsSection(); renderProjList();
+}
+
+// ── 완성작 ──
+function renderDone() {
+  const st = document.getElementById('stats-done');
+  const g = document.getElementById('grid-done');
+  const dc = { 입문: 0, 초급: 0, 중급: 0, 고급: 0 };
+  doneData.forEach(d => dc[d.diff] = (dc[d.diff] || 0) + 1);
+  st.innerHTML = `<div class="stat-card"><div class="stat-n">${doneData.length}</div><div class="stat-l">총 완성작</div></div>
+    <div class="stat-card"><div class="stat-n">${dc['입문'] + dc['초급']}</div><div class="stat-l">입문 · 초급</div></div>
+    <div class="stat-card"><div class="stat-n">${dc['중급'] + dc['고급']}</div><div class="stat-l">중급 · 고급</div></div>`;
+  if (!doneData.length) { g.innerHTML = '<div class="empty"><i class="ti ti-check"></i>아직 완성작이 없어요</div>'; return; }
+  const dp = { 입문: 'pill-green', 초급: 'pill-blue', 중급: 'pill-amber', 고급: 'pill-pink' };
+  g.innerHTML = doneData.map(d => `<div class="card">
+    <button class="del-btn" onclick="delDone(${d.id})" aria-label="삭제"><i class="ti ti-x"></i></button>
+    <div class="card-icon icon-done"><i class="ti ti-check"></i></div>
+    <div class="card-name">${d.name}</div>
+    <div class="pills">
+      <span class="pill ${dp[d.diff]}">${d.diff}</span>
+      ${d.date ? `<span class="pill pill-gray">${d.date}</span>` : ''}
+    </div>
+    ${d.yarn ? `<div class="card-row"><i class="ti ti-ball-baseball"></i>${d.yarn}</div>` : ''}
+    ${d.memo ? `<div class="card-row"><i class="ti ti-quote"></i>${d.memo}</div>` : ''}
+  </div>`).join('');
+}
+
+function saveDone() {
+  const n = document.getElementById('d-name').value.trim(); if (!n) return;
+  doneData.unshift({ id: nid, name: n, date: document.getElementById('d-date').value, diff: document.getElementById('d-diff').value, yarn: document.getElementById('d-yarn').value.trim(), memo: document.getElementById('d-memo').value.trim() });
+  ['d-name','d-date','d-yarn','d-memo'].forEach(id => document.getElementById(id).value = '');
+  persist(); closeModal('modal-done'); renderDone();
+}
+
+function delDone(id) {
+  if (!confirm('삭제할까요?')) return;
+  doneData = doneData.filter(d => d.id !== id);
+  persist(); renderDone();
+}
+
+// ── 식물 ──
+function daysSince(dateStr) {
+  if (!dateStr) return null;
+  return Math.floor((new Date() - new Date(dateStr)) / 86400000);
+}
+
+function renderPlants() {
+  const st = document.getElementById('stats-plant');
+  const g = document.getElementById('grid-plant');
+  const needWater = plantData.filter(d => { const ds = daysSince(d.lastWater); return ds === null || ds >= d.water; });
+  st.innerHTML = `<div class="stat-card"><div class="stat-n">${plantData.length}</div><div class="stat-l">식물 수</div></div>
+    <div class="stat-card"><div class="stat-n" style="${needWater.length ? 'color:var(--amber)' : ''}">${needWater.length}</div><div class="stat-l">물 줄 식물</div></div>`;
+  if (!plantData.length) { g.innerHTML = '<div class="empty"><i class="ti ti-plant"></i>등록된 식물이 없어요</div>'; return; }
+  const sunP = { '직사광선': 'pill-amber', '밝은 간접광': 'pill-green', '간접광': 'pill-green', '반음지': 'pill-blue' };
+  g.innerHTML = plantData.map(d => {
+    const ds = daysSince(d.lastWater);
+    const overdue = ds !== null && ds >= d.water;
+    return `<div class="card">
+      <button class="del-btn" onclick="delPlant(${d.id})" aria-label="삭제"><i class="ti ti-x"></i></button>
+      <div class="card-icon icon-plant"><i class="ti ti-plant"></i></div>
+      <div class="card-name">${d.name}</div>
+      <div class="card-sub">${d.type}${d.date ? ' · ' + d.date + ' 입양' : ''}</div>
+      <div class="pills">
+        ${d.sun ? `<span class="pill ${sunP[d.sun] || 'pill-gray'}">${d.sun}</span>` : ''}
+        ${d.soil ? `<span class="pill pill-gray">${d.soil}</span>` : ''}
+      </div>
+      <div class="card-row"><i class="ti ti-droplet"></i>물 주기: ${d.water}일마다${ds !== null ? ' · ' + ds + '일 전' : ''}
+        ${overdue ? `<span class="alert-badge" style="margin-left:6px"><i class="ti ti-alert-triangle"></i>물 주세요!</span>` : ''}
+      </div>
+      ${d.fert ? `<div class="card-row"><i class="ti ti-sprout"></i>${d.fert}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function savePlant() {
+  const n = document.getElementById('p-name').value.trim(); if (!n) return;
+  plantData.unshift({ id: nid, name: n, type: document.getElementById('p-type').value.trim(), date: document.getElementById('p-date').value, water: +document.getElementById('p-water').value || 7, sun: document.getElementById('p-sun').value, soil: document.getElementById('p-soil').value.trim(), fert: document.getElementById('p-fert').value.trim(), lastWater: null });
+  ['p-name','p-type','p-date','p-soil','p-fert'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('p-water').value = 7;
+  persist(); closeModal('modal-plant'); renderPlants();
+}
+
+function delPlant(id) {
+  if (!confirm('삭제할까요?')) return;
+  plantData = plantData.filter(d => d.id !== id);
+  logData = logData.filter(l => l.plantId !== id);
+  persist(); renderPlants(); renderLog();
+}
+
+// ── 관리 일지 ──
+function fillLogPlants() {
+  const sel = document.getElementById('l-plant');
+  sel.innerHTML = plantData.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  document.getElementById('l-date').value = TODAY;
+}
+
+const logTypeLabel = { water: '물주기', repot: '분갈이', fert: '비료', note: '메모' };
+const logDotClass = { water: 'log-dot-water', repot: 'log-dot-repot', fert: 'log-dot-fert', note: 'log-dot-note' };
+
+function renderLog() {
+  const list = document.getElementById('log-list');
+  if (!logData.length) { list.innerHTML = '<div class="empty"><i class="ti ti-droplet"></i>관리 기록이 없어요</div>'; return; }
+  const sorted = [...logData].sort((a, b) => b.date.localeCompare(a.date));
+  list.innerHTML = sorted.map(l => `<div class="log-item">
+    <div class="log-dot ${logDotClass[l.type]}"></div>
+    <div>
+      <div class="log-date">${l.date} · ${l.plantName}</div>
+      <div class="log-text"><span class="pill ${l.type==='water'?'pill-blue':l.type==='repot'?'pill-green':l.type==='fert'?'pill-amber':'pill-gray'}" style="margin-right:6px">${logTypeLabel[l.type]}</span>${l.note || ''}</div>
+    </div>
+  </div>`).join('');
+}
+
+function saveLog() {
+  const pid = +document.getElementById('l-plant').value;
+  const plant = plantData.find(p => p.id === pid); if (!plant) return;
+  const type = document.getElementById('l-type').value;
+  const date = document.getElementById('l-date').value || TODAY;
+  logData.unshift({ id: nid, plantId: pid, plantName: plant.name, date, type, note: document.getElementById('l-note').value.trim() });
+  if (type === 'water') plant.lastWater = date;
+  document.getElementById('l-note').value = '';
+  persist(); closeModal('modal-log'); renderPlants(); renderLog();
+}
+
+// ── Init ──
+renderProjList();
+</script>
+</body>
+</html>
